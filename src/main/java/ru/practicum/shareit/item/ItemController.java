@@ -3,6 +3,7 @@ package ru.practicum.shareit.item;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,22 +22,28 @@ import java.util.List;
 /**
  * TODO Sprint add-controllers.
  */
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/items")
 public class ItemController {
     private final ItemService itemService;
 
+    @ModelAttribute("userId")
+    public Long getUserId(@RequestHeader("X-Sharer-User-Id") Long userId) {
+        return userId;
+    }
+
     @PostMapping
     public ItemDto createItem(@Valid @RequestBody CreateItemDto createItemDto,
-                              @RequestHeader("X-Sharer-User-Id") Long userId) {
+                              @ModelAttribute("userId") Long userId) {
         return itemService.createItem(userId, createItemDto);
     }
 
     @PatchMapping("/{itemId}")
     public ItemDto updateItem(@Valid @RequestBody UpdateItemDto updateItemDto,
                               @PathVariable Long itemId,
-                              @RequestHeader("X-Sharer-User-Id") Long userId) {
+                              @ModelAttribute("userId") Long userId) {
         return itemService.updateItem(itemId, userId, updateItemDto);
     }
 
@@ -46,7 +53,7 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDto> findItemsByUserId(@RequestHeader(value = "X-Sharer-User-Id") Long userId) {
+    public List<ItemDto> findItemsByUserId(@ModelAttribute("userId") Long userId) {
         return itemService.getAllItemsByUserId(userId);
     }
 
