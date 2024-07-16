@@ -30,13 +30,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto createUser(CreateUserDto createUserDto) {
         User newUser = cs.convert(createUserDto, User.class);
-
         if (Objects.isNull(newUser)) {
             throw new InternalServerException("Failed created user");
-        }
-
-        if (userRepository.findByEmail(newUser.getEmail()).isPresent()) {
-            throw new EntityDuplicateException("email", newUser.getEmail());
         }
 
         newUser = userRepository.save(newUser);
@@ -65,8 +60,7 @@ public class UserServiceImpl implements UserService {
             userById.get().setName(updateUserDto.name());
         }
 
-        User updateUser = userRepository.update(userById.get());
-
+        User updateUser = userRepository.save(userById.get());
         log.info("Update user {}", updateUser);
 
         return cs.convert(updateUser, UserDto.class);

@@ -1,0 +1,15 @@
+
+version: '3.9'
+
+services:
+
+  db:
+    container_name: shareit-db
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: shareit
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+    ports:
+      - 5432:5432

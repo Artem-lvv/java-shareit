@@ -33,16 +33,16 @@ public class ItemServiceImpl implements ItemService {
     private final ConversionService cs;
 
     @Override
-    public ItemDto createItem(Long itemId, CreateItemDto createItemDto) {
-        Optional<User> userById = userRepository.findById(itemId);
+    public ItemDto createItem(Long userId, CreateItemDto createItemDto) {
+        Optional<User> userById = userRepository.findById(userId);
         if (userById.isEmpty()) {
-            throw new EntityNotFoundByIdException("Item", itemId.toString());
+            throw new EntityNotFoundByIdException("User", userId.toString());
         }
 
         Item newItem = cs.convert(createItemDto, Item.class);
 
         if (Objects.isNull(newItem)) {
-            throw new InternalServerException("Failed created user");
+            throw new InternalServerException("Failed created item");
         }
 
         newItem.setOwner(userById.get());
@@ -82,7 +82,7 @@ public class ItemServiceImpl implements ItemService {
             itemById.get().setAvailable(updateItemDto.available());
         }
 
-        Item updateItem = itemRepository.update(itemById.get());
+        Item updateItem = itemRepository.save(itemById.get());
         log.info("Update item {}", updateItem);
 
         return cs.convert(updateItem, ItemDto.class);
@@ -113,6 +113,8 @@ public class ItemServiceImpl implements ItemService {
         if (text.isEmpty()) {
             return Collections.emptyList();
         }
+
+        text = "%" + text + "%";
 
         List<Item> itemsByName = itemRepository.findItemsByText(text);
 
