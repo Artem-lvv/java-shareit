@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item.model.dto;
+package ru.practicum.shareit.item.model.item.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.NonNull;

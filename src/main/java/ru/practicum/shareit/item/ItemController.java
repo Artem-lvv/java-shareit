@@ -12,22 +12,23 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.shareit.item.model.dto.CreateItemDto;
-import ru.practicum.shareit.item.model.dto.ItemDto;
-import ru.practicum.shareit.item.model.dto.UpdateItemDto;
-import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.item.model.comment.dto.CommentDto;
+import ru.practicum.shareit.item.model.comment.dto.CreateCommentDto;
+import ru.practicum.shareit.item.model.item.dto.CreateItemDto;
+import ru.practicum.shareit.item.model.item.dto.ItemDto;
+import ru.practicum.shareit.item.model.item.dto.ItemWithRelatedEntitiesDto;
+import ru.practicum.shareit.item.model.item.dto.UpdateItemDto;
+import ru.practicum.shareit.item.service.comment.CommentService;
+import ru.practicum.shareit.item.service.item.ItemService;
 
 import java.util.List;
-
-/**
- * TODO Sprint add-controllers.
- */
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/items")
 public class ItemController {
     private final ItemService itemService;
+    private final CommentService commentService;
 
     @ModelAttribute("userId")
     public Long getUserId(@RequestHeader("X-Sharer-User-Id") Long userId) {
@@ -48,18 +49,25 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto findById(@PathVariable Long itemId) {
-        return itemService.getItemById(itemId);
+    public ItemWithRelatedEntitiesDto findById(@PathVariable Long itemId, @ModelAttribute("userId") Long userId) {
+        return itemService.getItemById(itemId, userId);
     }
 
     @GetMapping
-    public List<ItemDto> findItemsByUserId(@ModelAttribute("userId") Long userId) {
-        return itemService.getAllItemsByUserId(userId);
+    public List<ItemWithRelatedEntitiesDto> findItemsByOwnerId(@ModelAttribute("userId") Long userId) {
+        return itemService.getAllItemsByOwnerId(userId);
     }
 
     @GetMapping("/search")
     public List<ItemDto> searchItems(@RequestParam String text) {
         return itemService.getItemsByText(text);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto createComment(@Valid @RequestBody CreateCommentDto createCommentDto,
+                                    @PathVariable Long itemId,
+                                    @ModelAttribute("userId") Long userId) {
+        return commentService.createComment(createCommentDto, itemId, userId);
     }
 
 }

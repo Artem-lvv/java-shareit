@@ -1,10 +1,6 @@
-package ru.practicum.shareit.item.model.dto;
+package ru.practicum.shareit.item.model.item.dto;
 
 import lombok.Builder;
-
-/**
- * TODO Sprint add-controllers.
- */
 
 @Builder
 public record ItemDto(
@@ -13,5 +9,4 @@ public record ItemDto(
         String description,
         boolean available
 ) {
-
 }

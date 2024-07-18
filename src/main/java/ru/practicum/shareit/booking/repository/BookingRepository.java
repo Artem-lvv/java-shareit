@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +17,19 @@ import java.util.Optional;
 @Transactional
 public interface BookingRepository extends JpaRepository<Booking, Long> {
     Optional<Booking> findByIdAndItemOwnerId(Long bookingId, Long userId);
+
+    @Query("SELECT b " +
+            "FROM Booking b " +
+            "JOIN FETCH b.item " +
+            "JOIN FETCH b.booker " +
+            "WHERE b.booker.id = :userId " +
+            "   AND b.item.id = :itemId " +
+            "   AND b.status = 'APPROVED'" +
+            "   AND b.end <= CURRENT_TIMESTAMP " +
+            "ORDER BY b.end DESC " +
+            "LIMIT 1")
+    Optional<Booking> findPastApprovedBooking(@Param("userId") Long userId,
+                                              @Param("itemId") Long itemId);
 
     @Query("SELECT b " +
             "FROM Booking b " +
@@ -35,7 +49,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query(value = "SELECT b " +
             "FROM Booking b " +
             "WHERE b.start <= CURRENT_TIMESTAMP AND b.end >= CURRENT_TIMESTAMP AND b.booker.id = :bookerId " +
-            "ORDER BY b.id DESC")
+            "ORDER BY b.id")
     List<Booking> findCurrentBookings(@Param("bookerId") Long userId);
 
     @Query(value = "SELECT b " +
