@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.shareit.exception.EntityNotFoundByIdException;
 import ru.practicum.shareit.exception.InternalServerException;
@@ -28,6 +29,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
@@ -36,6 +38,7 @@ public class ItemServiceImpl implements ItemService {
     @Qualifier("mvcConversionService")
     private final ConversionService cs;
 
+    @Transactional
     @Override
     public ItemDto createItem(final Long userId, final CreateItemDto createItemDto) {
         Optional<User> userById = userRepository.findById(userId);
@@ -57,6 +60,7 @@ public class ItemServiceImpl implements ItemService {
         return cs.convert(newItem, ItemDto.class);
     }
 
+    @Transactional
     @Override
     public ItemDto updateItem(final Long itemId, final Long userId, final UpdateItemDto updateItemDto) {
         Optional<Item> itemById = itemRepository.findById(itemId);

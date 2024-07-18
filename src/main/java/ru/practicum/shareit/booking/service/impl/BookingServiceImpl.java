@@ -7,6 +7,7 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
@@ -17,10 +18,8 @@ import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.exception.EntityNotFoundByIdException;
 import ru.practicum.shareit.exception.UnsupportedStatusException;
 import ru.practicum.shareit.item.model.item.Item;
-import ru.practicum.shareit.item.model.item.dto.ItemDto;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.model.dto.UserDto;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.List;
@@ -29,6 +28,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
@@ -38,6 +38,7 @@ public class BookingServiceImpl implements BookingService {
     @Qualifier("mvcConversionService")
     private final ConversionService cs;
 
+    @Transactional
     @Override
     public BookingDto createBooking(CreateBookingDto createBookingDto, final Long userId) {
         if ((Objects.isNull(createBookingDto.start()) || Objects.isNull(createBookingDto.end()))
@@ -74,6 +75,7 @@ public class BookingServiceImpl implements BookingService {
         return cs.convert(newBooking, BookingDto.class);
     }
 
+    @Transactional
     @Override
     public BookingDto updateBookingStatus(final Long bookingId, final boolean approved, final Long userId) {
         Booking booking = bookingRepository.findByIdAndItemOwnerId(bookingId, userId)

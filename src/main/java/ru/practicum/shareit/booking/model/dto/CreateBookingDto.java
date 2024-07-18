@@ -6,7 +6,7 @@ import ru.practicum.shareit.booking.model.BookingStatus;
 
 import java.time.LocalDateTime;
 
-public record CreateBookingDto (
+public record CreateBookingDto(
         @Positive
         Long itemId,
         @FutureOrPresent

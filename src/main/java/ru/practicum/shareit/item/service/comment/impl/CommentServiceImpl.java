@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
@@ -20,6 +21,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
@@ -27,6 +29,7 @@ public class CommentServiceImpl implements CommentService {
     @Qualifier("mvcConversionService")
     private final ConversionService cs;
 
+    @Transactional
     @Override
     public CommentDto createComment(CreateCommentDto createCommentDto, Long itemId, Long userId) {
         Optional<Booking> pastApprovedBooking = bookingRepository.findPastApprovedBooking(userId,

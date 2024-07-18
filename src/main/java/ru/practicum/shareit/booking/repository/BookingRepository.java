@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,6 +38,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
                                                                     @Param("userId") Long userId);
 
     List<Booking> findAllByBooker_Id(Long userId, Sort sort);
+
     @Query(value = "SELECT b " +
             "FROM Booking b " +
             "WHERE b.status = :status AND b.booker.id = :bookerId " +

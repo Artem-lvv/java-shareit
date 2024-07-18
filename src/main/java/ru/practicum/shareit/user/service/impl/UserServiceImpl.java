@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.EntityDuplicateException;
 import ru.practicum.shareit.exception.EntityNotFoundByIdException;
 import ru.practicum.shareit.exception.InternalServerException;
@@ -21,12 +22,14 @@ import java.util.Optional;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     @Qualifier("mvcConversionService")
     private final ConversionService cs;
 
+    @Transactional
     @Override
     public UserDto createUser(CreateUserDto createUserDto) {
         User newUser = cs.convert(createUserDto, User.class);
@@ -40,6 +43,7 @@ public class UserServiceImpl implements UserService {
         return cs.convert(newUser, UserDto.class);
     }
 
+    @Transactional
     @Override
     public UserDto updateUser(final Long userId, UpdateUserDto updateUserDto) {
         Optional<User> userById = userRepository.findById(userId);
@@ -66,6 +70,7 @@ public class UserServiceImpl implements UserService {
         return cs.convert(updateUser, UserDto.class);
     }
 
+    @Transactional
     @Override
     public void deleteUser(final Long userId) {
         if (userRepository.findById(userId).isPresent()) {
