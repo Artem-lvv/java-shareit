@@ -29,7 +29,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
@@ -121,7 +121,7 @@ public class ItemServiceImpl implements ItemService {
                     .map(itemWithRelatedEntities -> cs.convert(itemWithRelatedEntities, ItemWithRelatedEntitiesDto.class))
                     .toList();
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error");
         }
 
         return resultList;

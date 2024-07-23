@@ -3,14 +3,12 @@ package ru.practicum.shareit.item.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.item.model.item.Item;
 import ru.practicum.shareit.item.model.item.ItemWithRelatedEntities;
 
 import java.util.List;
 import java.util.Optional;
 
-@Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
     @Query("SELECT new ru.practicum.shareit.item.model.item.ItemWithRelatedEntities(i, lb, nb)\n" +
             "FROM Item i \n" +

@@ -4,16 +4,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 
 import java.util.List;
 import java.util.Optional;
 
-@Repository
-@Transactional
 public interface BookingRepository extends JpaRepository<Booking, Long> {
     Optional<Booking> findByIdAndItemOwnerId(Long bookingId, Long userId);
 
@@ -63,8 +59,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "WHERE b.start > CURRENT_TIMESTAMP AND b.booker.id = :bookerId " +
             "ORDER BY b.id DESC")
     List<Booking> findFutureBookings(@Param("bookerId") Long userId);
-
-
 
     List<Booking> findAllByItemOwnerId(Long userId, Sort sort);
 

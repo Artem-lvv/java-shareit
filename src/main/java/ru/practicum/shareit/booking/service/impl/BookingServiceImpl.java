@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
+import ru.practicum.shareit.booking.model.TypeState;
 import ru.practicum.shareit.booking.model.dto.BookingDto;
 import ru.practicum.shareit.booking.model.dto.CreateBookingDto;
 import ru.practicum.shareit.booking.repository.BookingRepository;
@@ -23,7 +24,6 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -41,13 +41,6 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     @Override
     public BookingDto createBooking(CreateBookingDto createBookingDto, final Long userId) {
-        if ((Objects.isNull(createBookingDto.start()) || Objects.isNull(createBookingDto.end()))
-                || (createBookingDto.end().isBefore(createBookingDto.start())
-                || createBookingDto.start().equals(createBookingDto.end()))) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Booking date is null or end date is greater than start date");
-        }
-
         User userById = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundByIdException("User", userId.toString()));
 
@@ -103,14 +96,14 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDto> getBookings(final String state, final Long userId) {
-        List<Booking> bookings = switch (state.toUpperCase()) {
-            case "CURRENT" -> bookingRepository.findCurrentBookings(userId);
-            case "PAST" -> bookingRepository.findPastBookings(userId);
-            case "FUTURE" -> bookingRepository.findFutureBookings(userId);
-            case "WAITING" -> bookingRepository.findBookingsByStatusAndBookerId(userId, BookingStatus.WAITING);
-            case "REJECTED" -> bookingRepository.findBookingsByStatusAndBookerId(userId, BookingStatus.REJECTED);
-            case "ALL" -> bookingRepository.findAllByBooker_Id(userId, Sort.by(Sort.Direction.DESC, "id"));
+    public List<BookingDto> getBookings(final TypeState state, final Long userId) {
+        List<Booking> bookings = switch (state) {
+            case CURRENT -> bookingRepository.findCurrentBookings(userId);
+            case PAST -> bookingRepository.findPastBookings(userId);
+            case FUTURE -> bookingRepository.findFutureBookings(userId);
+            case WAITING -> bookingRepository.findBookingsByStatusAndBookerId(userId, BookingStatus.WAITING);
+            case REJECTED -> bookingRepository.findBookingsByStatusAndBookerId(userId, BookingStatus.REJECTED);
+            case ALL -> bookingRepository.findAllByBooker_Id(userId, Sort.by(Sort.Direction.DESC, "id"));
             default -> throw new UnsupportedStatusException("Unknown state: %s".formatted(state));
         };
 
@@ -125,15 +118,15 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDto> getBookingsForOwner(String state, Long userId) {
-        List<Booking> bookings = switch (state.toUpperCase()) {
-            case "CURRENT" -> bookingRepository.findCurrentBookingsForOwner(userId);
-            case "PAST" -> bookingRepository.findPastBookingsForOwner(userId);
-            case "FUTURE" -> bookingRepository.findFutureBookingsForOwner(userId);
-            case "WAITING" -> bookingRepository.findBookingsByStatusAndBookerIdForOwner(userId, BookingStatus.WAITING);
-            case "REJECTED" ->
+    public List<BookingDto> getBookingsForOwner(TypeState state, Long userId) {
+        List<Booking> bookings = switch (state) {
+            case CURRENT -> bookingRepository.findCurrentBookingsForOwner(userId);
+            case PAST -> bookingRepository.findPastBookingsForOwner(userId);
+            case FUTURE -> bookingRepository.findFutureBookingsForOwner(userId);
+            case WAITING -> bookingRepository.findBookingsByStatusAndBookerIdForOwner(userId, BookingStatus.WAITING);
+            case REJECTED ->
                     bookingRepository.findBookingsByStatusAndBookerIdForOwner(userId, BookingStatus.REJECTED);
-            case "ALL" -> bookingRepository.findAllByItemOwnerId(userId, Sort.by(Sort.Direction.DESC, "id"));
+            case ALL -> bookingRepository.findAllByItemOwnerId(userId, Sort.by(Sort.Direction.DESC, "id"));
             default -> throw new UnsupportedStatusException("Unknown state: %s".formatted(state));
         };
 
