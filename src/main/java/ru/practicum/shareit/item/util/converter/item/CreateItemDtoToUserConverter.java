@@ -1,9 +1,9 @@
-package ru.practicum.shareit.item.util.converter;
+package ru.practicum.shareit.item.util.converter.item;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
-import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.model.dto.CreateItemDto;
+import ru.practicum.shareit.item.model.item.Item;
+import ru.practicum.shareit.item.model.item.dto.CreateItemDto;
 
 @Component
 public class CreateItemDtoToUserConverter implements Converter<CreateItemDto, Item> {

@@ -1,10 +1,13 @@
-package ru.practicum.shareit.user.model;
+package ru.practicum.shareit.item.model.item;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,6 +16,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
+import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.Objects;
 
@@ -23,8 +28,8 @@ import java.util.Objects;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "users")
-public class User {
+@Table(name = "items")
+public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,8 +37,21 @@ public class User {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "email", nullable = false, unique = true)
-    private String email;
+    @Column(name = "description")
+    private String description;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id", nullable = false)
+    @ToString.Exclude
+    private User owner;
+
+    @ToString.Exclude
+    @ManyToOne(fetch =  FetchType.LAZY)
+    @JoinColumn(name = "request_id")
+    private ItemRequest request;
+
+    @Column(name = "available", nullable = false)
+    private boolean available;
 
     @Override
     public final boolean equals(Object o) {
@@ -44,8 +62,8 @@ public class User {
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this)
                 .getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        User user = (User) o;
-        return getId() != null && Objects.equals(getId(), user.getId());
+        Item item = (Item) o;
+        return getId() != null && Objects.equals(getId(), item.getId());
     }
 
     @Override

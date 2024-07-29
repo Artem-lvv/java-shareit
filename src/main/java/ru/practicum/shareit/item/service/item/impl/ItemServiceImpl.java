@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item.service.impl;
+package ru.practicum.shareit.item.service.item.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -6,15 +6,19 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.shareit.exception.EntityNotFoundByIdException;
 import ru.practicum.shareit.exception.InternalServerException;
-import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.model.dto.CreateItemDto;
-import ru.practicum.shareit.item.model.dto.ItemDto;
-import ru.practicum.shareit.item.model.dto.UpdateItemDto;
+import ru.practicum.shareit.item.model.item.Item;
+import ru.practicum.shareit.item.model.item.ItemWithRelatedEntities;
+import ru.practicum.shareit.item.model.item.dto.CreateItemDto;
+import ru.practicum.shareit.item.model.item.dto.ItemDto;
+import ru.practicum.shareit.item.model.item.dto.ItemWithRelatedEntitiesDto;
+import ru.practicum.shareit.item.model.item.dto.UpdateItemDto;
+import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
-import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.item.service.item.ItemService;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -25,24 +29,27 @@ import java.util.Optional;
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
     @Qualifier("mvcConversionService")
     private final ConversionService cs;
 
+    @Transactional
     @Override
-    public ItemDto createItem(Long itemId, CreateItemDto createItemDto) {
-        Optional<User> userById = userRepository.findById(itemId);
+    public ItemDto createItem(final Long userId, final CreateItemDto createItemDto) {
+        Optional<User> userById = userRepository.findById(userId);
         if (userById.isEmpty()) {
-            throw new EntityNotFoundByIdException("Item", itemId.toString());
+            throw new EntityNotFoundByIdException("User", userId.toString());
         }
 
         Item newItem = cs.convert(createItemDto, Item.class);
 
         if (Objects.isNull(newItem)) {
-            throw new InternalServerException("Failed created user");
+            throw new InternalServerException("Failed created item");
         }
 
         newItem.setOwner(userById.get());
@@ -53,8 +60,9 @@ public class ItemServiceImpl implements ItemService {
         return cs.convert(newItem, ItemDto.class);
     }
 
+    @Transactional
     @Override
-    public ItemDto updateItem(Long itemId, Long userId, UpdateItemDto updateItemDto) {
+    public ItemDto updateItem(final Long itemId, final Long userId, final UpdateItemDto updateItemDto) {
         Optional<Item> itemById = itemRepository.findById(itemId);
         if (itemById.isEmpty()) {
             throw new EntityNotFoundByIdException("Item", itemId.toString());
@@ -82,39 +90,51 @@ public class ItemServiceImpl implements ItemService {
             itemById.get().setAvailable(updateItemDto.available());
         }
 
-        Item updateItem = itemRepository.update(itemById.get());
+        Item updateItem = itemRepository.save(itemById.get());
         log.info("Update item {}", updateItem);
 
         return cs.convert(updateItem, ItemDto.class);
     }
 
     @Override
-    public ItemDto getItemById(Long itemId) {
-        Optional<Item> itemById = itemRepository.findById(itemId);
+    public ItemWithRelatedEntitiesDto getItemById(final Long itemId, final Long userId) {
+        Optional<ItemWithRelatedEntities> itemById = itemRepository
+                .findItemById(itemId, userId);
+
         if (itemById.isPresent()) {
-            return cs.convert(itemById.get(), ItemDto.class);
+            itemById.get().setComments(commentRepository.findAllByItem_Id(itemId));
+            return cs.convert(itemById.get(), ItemWithRelatedEntitiesDto.class);
+
         } else {
             throw new EntityNotFoundByIdException("Item", itemId.toString());
         }
     }
 
     @Override
-    public List<ItemDto> getAllItemsByUserId(Long userId) {
-        List<Item> allItemsByUserId = itemRepository.findAllItemsByUserId(userId);
+    public List<ItemWithRelatedEntitiesDto> getAllItemsByOwnerId(final Long userId) {
+        List<ItemWithRelatedEntities> allItemsByOwnerId = itemRepository.findAllItemsByOwnerId(userId);
 
-        return allItemsByUserId
-                .stream()
-                .map(item -> cs.convert(item, ItemDto.class))
-                .toList();
+        List<ItemWithRelatedEntitiesDto> resultList = null;
+        try {
+            resultList = allItemsByOwnerId
+                    .stream()
+                    .map(itemWithRelatedEntities -> cs.convert(itemWithRelatedEntities, ItemWithRelatedEntitiesDto.class))
+                    .toList();
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error");
+        }
+
+        return resultList;
     }
 
     @Override
-    public List<ItemDto> getItemsByText(String text) {
+    public List<ItemDto> getItemsByText(final String text) {
         if (text.isEmpty()) {
             return Collections.emptyList();
         }
 
-        List<Item> itemsByName = itemRepository.findItemsByText(text);
+        String textSearch = "%" + text + "%";
+        List<Item> itemsByName = itemRepository.findAllItemsByText(textSearch);
 
         return itemsByName
                 .stream()

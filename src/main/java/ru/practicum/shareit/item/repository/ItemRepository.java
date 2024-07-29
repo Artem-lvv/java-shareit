@@ -1,57 +1,54 @@
 package ru.practicum.shareit.item.repository;
 
-import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.item.model.Item;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import ru.practicum.shareit.item.model.item.Item;
+import ru.practicum.shareit.item.model.item.ItemWithRelatedEntities;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
-@Repository
-public class ItemRepository {
-    private Long currentMaxId = 0L;
-    private final Map<Long, Item> idToItem = new HashMap<>();
+public interface ItemRepository extends JpaRepository<Item, Long> {
+    @Query("SELECT new ru.practicum.shareit.item.model.item.ItemWithRelatedEntities(i, lb, nb)\n" +
+            "FROM Item i \n" +
+            "       LEFT JOIN FETCH Booking lb ON lb.item.id = i.id AND lb.end = (SELECT MAX(b.end)\n" +
+            "                                                               FROM Booking b\n" +
+            "                                                               WHERE b.item.id = i.id\n" +
+            "                                                                 AND b.end <= CURRENT_TIMESTAMP\n" +
+            "                                                                 AND b.status = 'APPROVED'\n" +
+            "                                                                 AND b.item.owner.id = :ownerId)\n" +
+            "       LEFT JOIN FETCH Booking nb ON nb.item.id = i.id AND nb.start = (SELECT MIN(b.start)\n" +
+            "                                                                 FROM Booking b\n" +
+            "                                                                 WHERE b.item.id = i.id\n" +
+            "                                                                   AND b.start >= CURRENT_TIMESTAMP\n" +
+            "                                                                   AND b.status = 'APPROVED'\n" +
+            "                                                                   AND b.item.owner.id = :ownerId)\n" +
+            "WHERE i.owner.id = :ownerId")
+    List<ItemWithRelatedEntities> findAllItemsByOwnerId(@Param("ownerId") Long userId);
 
-    public Item save(Item item) {
-        Long id = getNextId();
+    @Query(value = "SELECT * " +
+            "FROM Items i " +
+            "WHERE i.available = true AND (i.name ILIKE :searchText OR i.description ILIKE :searchText)",
+            nativeQuery = true)
+    List<Item> findAllItemsByText(@Param("searchText") String text);
 
-        item.setId(id);
-        idToItem.put(id, item);
+    @Query("SELECT new ru.practicum.shareit.item.model.item.ItemWithRelatedEntities(i, lb, nb)\n" +
+            "FROM Item i \n" +
+            "       LEFT JOIN FETCH Booking lb ON lb.item.id = i.id AND lb.end = (SELECT MAX(b.end)\n" +
+            "                                                               FROM Booking b\n" +
+            "                                                               WHERE b.item.id = i.id\n" +
+            "                                                                 AND (b.start <= CURRENT_TIMESTAMP)\n" +
+            "                                                                 AND b.status = 'APPROVED'\n" +
+            "                                                                 AND b.item.owner.id = :itemOwnerId)\n" +
+            "       LEFT JOIN FETCH Booking nb ON nb.item.id = i.id AND nb.start = (SELECT MIN(b.start)\n" +
+            "                                                                 FROM Booking b\n" +
+            "                                                                 WHERE b.item.id = i.id\n" +
+            "                                                                   AND b.start >= CURRENT_TIMESTAMP\n" +
+            "                                                                   AND b.status = 'APPROVED'\n" +
+            "                                                                   AND b.item.owner.id = :itemOwnerId)\n" +
+            "WHERE i.id = :itemId")
+    Optional<ItemWithRelatedEntities> findItemById(@Param("itemId") Long itemId,
+                                                   @Param("itemOwnerId") Long userId);
 
-        return item;
-    }
-
-    public Item update(Item item) {
-        idToItem.put(item.getId(), item);
-        return item;
-    }
-
-    public void deleteById(Long itemId) {
-        idToItem.remove(itemId);
-    }
-
-    public Optional<Item> findById(Long itemId) {
-        return Optional.ofNullable(idToItem.get(itemId));
-    }
-
-
-    public List<Item> findAllItemsByUserId(Long userId) {
-        return idToItem.values()
-                .stream()
-                .filter(item -> item.getOwner().getId().equals(userId))
-                .toList();
-    }
-
-    private long getNextId() {
-        return ++currentMaxId;
-    }
-
-    public List<Item> findItemsByText(String text) {
-        return idToItem.values()
-                .stream()
-                .filter(item -> item.isAvailable() && (item.getName().toLowerCase().contains(text.toLowerCase())
-                        || item.getDescription().toLowerCase().contains(text.toLowerCase())))
-                .toList();
-    }
 }
