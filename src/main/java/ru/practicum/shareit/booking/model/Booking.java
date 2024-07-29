@@ -48,9 +48,9 @@ public class Booking {
     @ToString.Exclude
     private Item item;
 
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "booker_id", nullable = false)
-    @ToString.Exclude
     private User booker;
 
     @Enumerated(EnumType.STRING)

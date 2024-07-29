@@ -45,9 +45,9 @@ public class Item {
     @ToString.Exclude
     private User owner;
 
+    @ToString.Exclude
     @ManyToOne(fetch =  FetchType.LAZY)
     @JoinColumn(name = "request_id")
-    @ToString.Exclude
     private ItemRequest request;
 
     @Column(name = "available", nullable = false)
