@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
-import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.ItemRequest.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.Objects;
@@ -40,9 +40,9 @@ public class Item {
     @Column(name = "description")
     private String description;
 
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", nullable = false)
-    @ToString.Exclude
     private User owner;
 
     @ToString.Exclude

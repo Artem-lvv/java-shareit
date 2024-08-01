@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import ru.practicum.shareit.ItemRequest.model.ItemRequest;
+import ru.practicum.shareit.ItemRequest.repository.ItemRequestRepository;
 import ru.practicum.shareit.exception.EntityNotFoundByIdException;
 import ru.practicum.shareit.exception.InternalServerException;
 import ru.practicum.shareit.item.model.item.Item;
@@ -35,6 +37,7 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
+    private final ItemRequestRepository itemRequestRepository;
     @Qualifier("mvcConversionService")
     private final ConversionService cs;
 
@@ -46,6 +49,14 @@ public class ItemServiceImpl implements ItemService {
             throw new EntityNotFoundByIdException("User", userId.toString());
         }
 
+        Optional<ItemRequest> itemRequest = Optional.empty();
+        if (Objects.nonNull(createItemDto.requestId())) {
+            itemRequest = itemRequestRepository.findById(createItemDto.requestId());
+            if (itemRequest.isEmpty()) {
+                throw new EntityNotFoundByIdException("Item request", createItemDto.requestId().toString());
+            }
+        }
+
         Item newItem = cs.convert(createItemDto, Item.class);
 
         if (Objects.isNull(newItem)) {
@@ -53,6 +64,7 @@ public class ItemServiceImpl implements ItemService {
         }
 
         newItem.setOwner(userById.get());
+        newItem.setRequest(itemRequest.orElse(null));
         newItem = itemRepository.save(newItem);
 
         log.info("Create item {}", newItem);

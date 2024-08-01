@@ -51,4 +51,9 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     Optional<ItemWithRelatedEntities> findItemById(@Param("itemId") Long itemId,
                                                    @Param("itemOwnerId") Long userId);
 
+    @Query("SELECT i " +
+            "FROM Item  i " +
+            "JOIN FETCH i.owner " +
+            "WHERE i.request.id = :requestId")
+    List<Item> findAllByRequestIdWithOwner(@Param("requestId") Long requestId);
 }

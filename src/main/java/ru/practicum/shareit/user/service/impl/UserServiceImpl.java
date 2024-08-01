@@ -37,6 +37,10 @@ public class UserServiceImpl implements UserService {
             throw new InternalServerException("Failed created user");
         }
 
+        if (userRepository.findByEmail(createUserDto.email()).isPresent()) {
+            throw new EntityDuplicateException("Email", createUserDto.email());
+        }
+
         newUser = userRepository.save(newUser);
         log.info("Create user {}", newUser);
 

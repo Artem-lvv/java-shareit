@@ -72,7 +72,8 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingDto updateBookingStatus(final Long bookingId, final boolean approved, final Long userId) {
         Booking booking = bookingRepository.findByIdAndItemOwnerId(bookingId, userId)
-                .orElseThrow(() -> new EntityNotFoundByIdException("Booking", bookingId.toString()));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Entity not found by id [%s]".formatted(bookingId.toString())));
 
         BookingStatus newBookingStatus = approved ? BookingStatus.APPROVED : BookingStatus.REJECTED;
 
