@@ -2,8 +2,10 @@ package ru.practicum.shareit.item.model.item.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.NonNull;
 
+@Builder
 public record CreateItemDto(
         @NotBlank(message = "Element must not be null and must contain at least one non-whitespace character.")
         String name,
