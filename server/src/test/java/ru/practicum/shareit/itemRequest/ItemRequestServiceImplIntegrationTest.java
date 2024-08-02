@@ -5,13 +5,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.ItemRequest.model.dto.CreateItemRequestDto;
-import ru.practicum.shareit.ItemRequest.model.dto.ItemRequestDto;
-import ru.practicum.shareit.ItemRequest.model.dto.ItemRequestWithItemsDto;
-import ru.practicum.shareit.ItemRequest.repository.ItemRequestRepository;
-import ru.practicum.shareit.ItemRequest.service.impl.ItemRequestServiceImpl;
 import ru.practicum.shareit.exception.EntityNotFoundByIdException;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.itemRequest.model.dto.CreateItemRequestDto;
+import ru.practicum.shareit.itemRequest.model.dto.ItemRequestDto;
+import ru.practicum.shareit.itemRequest.model.dto.ItemRequestWithItemsDto;
+import ru.practicum.shareit.itemRequest.repository.ItemRequestRepository;
+import ru.practicum.shareit.itemRequest.service.impl.ItemRequestServiceImpl;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 

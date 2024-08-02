@@ -1,4 +1,4 @@
-package ru.practicum.shareit.ItemRequest.model;
+package ru.practicum.shareit.itemRequest.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

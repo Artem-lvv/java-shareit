@@ -7,12 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.json.JsonContent;
-import org.springframework.boot.test.json.ObjectContent;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import ru.practicum.shareit.ItemRequest.model.dto.CreateItemRequestDto;
-import ru.practicum.shareit.ItemRequest.model.dto.ItemRequestDto;
-import ru.practicum.shareit.ItemRequest.model.dto.ItemRequestWithItemsDto;
 import ru.practicum.shareit.item.model.item.dto.ItemIdNameIdOwnerDto;
+import ru.practicum.shareit.itemRequest.model.dto.CreateItemRequestDto;
+import ru.practicum.shareit.itemRequest.model.dto.ItemRequestDto;
+import ru.practicum.shareit.itemRequest.model.dto.ItemRequestWithItemsDto;
 
 import java.time.LocalDateTime;
 import java.util.List;

@@ -17,8 +17,6 @@ import ru.pracicum.shareit.item.model.comment.dto.CreateCommentDto;
 import ru.pracicum.shareit.item.model.item.dto.CreateItemDto;
 import ru.pracicum.shareit.item.model.item.dto.UpdateItemDto;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/items")
