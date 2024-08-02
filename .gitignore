@@ -31,5 +31,5 @@ build/
 
 ### VS Code ###
 .vscode/
-!/checkstyle.xml
-/checkstyle.xml
+!/gateway/checkstyle.xml
+/gateway/checkstyle.xml
