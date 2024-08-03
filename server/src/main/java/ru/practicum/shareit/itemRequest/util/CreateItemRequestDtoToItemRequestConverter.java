@@ -1,9 +1,9 @@
-package ru.practicum.shareit.ItemRequest.util;
+package ru.practicum.shareit.itemRequest.util;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
-import ru.practicum.shareit.ItemRequest.model.ItemRequest;
-import ru.practicum.shareit.ItemRequest.model.dto.CreateItemRequestDto;
+import ru.practicum.shareit.itemRequest.model.ItemRequest;
+import ru.practicum.shareit.itemRequest.model.dto.CreateItemRequestDto;
 
 @Component
 public class CreateItemRequestDtoToItemRequestConverter implements Converter<CreateItemRequestDto, ItemRequest> {

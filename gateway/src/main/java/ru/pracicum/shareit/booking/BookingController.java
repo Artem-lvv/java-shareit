@@ -15,9 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.pracicum.shareit.booking.model.TypeState;
 import ru.pracicum.shareit.booking.model.dto.CreateBookingDto;
-import ru.pracicum.shareit.client.BaseClient;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

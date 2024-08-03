@@ -1,9 +1,9 @@
-package ru.practicum.shareit.ItemRequest.util;
+package ru.practicum.shareit.itemRequest.util;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
-import ru.practicum.shareit.ItemRequest.model.ItemRequestWithItems;
-import ru.practicum.shareit.ItemRequest.model.dto.ItemRequestWithItemsDto;
+import ru.practicum.shareit.itemRequest.model.ItemRequestWithItems;
+import ru.practicum.shareit.itemRequest.model.dto.ItemRequestWithItemsDto;
 import ru.practicum.shareit.item.model.item.dto.ItemIdNameIdOwnerDto;
 
 import java.util.Collections;

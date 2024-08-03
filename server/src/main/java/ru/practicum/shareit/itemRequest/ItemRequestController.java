@@ -1,6 +1,5 @@
-package ru.practicum.shareit.ItemRequest;
+package ru.practicum.shareit.itemRequest;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -11,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.shareit.ItemRequest.model.dto.CreateItemRequestDto;
-import ru.practicum.shareit.ItemRequest.model.dto.ItemRequestDto;
-import ru.practicum.shareit.ItemRequest.model.dto.ItemRequestWithItemsDto;
-import ru.practicum.shareit.ItemRequest.service.ItemRequestService;
+import ru.practicum.shareit.itemRequest.model.dto.CreateItemRequestDto;
+import ru.practicum.shareit.itemRequest.model.dto.ItemRequestDto;
+import ru.practicum.shareit.itemRequest.model.dto.ItemRequestWithItemsDto;
+import ru.practicum.shareit.itemRequest.service.ItemRequestService;
 
 import java.util.List;
 
@@ -30,7 +29,7 @@ public class ItemRequestController {
     }
 
     @PostMapping
-    public ItemRequestDto createItemRequest(@Valid @RequestBody CreateItemRequestDto createItemRequestDto,
+    public ItemRequestDto createItemRequest(@RequestBody CreateItemRequestDto createItemRequestDto,
                                             @ModelAttribute("userId") Long userId) {
         return itemRequestService.createItemRequest(createItemRequestDto, userId);
     }

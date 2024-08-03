@@ -42,6 +42,7 @@ class UserServiceImplIntegrationTest {
         assertThat(userDto.name()).isEqualTo("John Doe");
         assertThat(userDto.email()).isEqualTo("john.doe@example.com");
     }
+
     @Test
     void createUser_DuplicateEmail() {
         CreateUserDto createUserDto1 = new CreateUserDto("John Doe", "john.doe@example.com");
