@@ -2,6 +2,7 @@ services:
   db:
     image: postgres:16.1
     container_name: shareit-db
+
     ports:
       - "5432:5432"
     environment:
