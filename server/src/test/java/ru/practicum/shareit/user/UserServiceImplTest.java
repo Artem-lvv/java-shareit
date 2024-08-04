@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.convert.ConversionService;
 import ru.practicum.shareit.exception.EntityDuplicateException;
 import ru.practicum.shareit.exception.EntityNotFoundByIdException;

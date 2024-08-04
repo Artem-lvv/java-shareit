@@ -59,8 +59,7 @@ class BookingServiceImplTest {
         MockitoAnnotations.openMocks(this);
 
         Long userId = 1L;
-        createBookingDto = CreateBookingDto.
-                builder()
+        createBookingDto = CreateBookingDto.builder()
                 .itemId(1L)
                 .start(LocalDateTime.now())
                 .end(LocalDateTime.now().plusDays(1))
@@ -133,8 +132,7 @@ class BookingServiceImplTest {
     @Test
     void testCreateBookingItemNotFound() {
         Long userId = 1L;
-        CreateBookingDto createBookingDto = CreateBookingDto.
-                builder()
+        CreateBookingDto createBookingDto = CreateBookingDto.builder()
                 .itemId(1L)
                 .start(LocalDateTime.now())
                 .end(LocalDateTime.now().plusDays(1))
@@ -155,8 +153,7 @@ class BookingServiceImplTest {
     @Test
     void testCreateBookingItemUnavailable() {
         Long userId = 1L;
-        CreateBookingDto createBookingDto = CreateBookingDto.
-                builder()
+        CreateBookingDto createBookingDto = CreateBookingDto.builder()
                 .itemId(1L)
                 .start(LocalDateTime.now())
                 .end(LocalDateTime.now().plusDays(1))
