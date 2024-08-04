@@ -164,6 +164,9 @@
                     <version>0.8.12</version>
                     <configuration>
                         <output>file</output>
+                        <excludes>
+                            <exclude>**/model/**</exclude>
+                        </excludes>
                     </configuration>
                     <executions>
                         <execution>
