@@ -31,10 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-!/gateway/checkstyle.xml
-/gateway/checkstyle.xml
-/checkstyle.xml
-!/amplicode.xml
-/amplicode.xml
-/server/.mvn/wrapper/maven-wrapper.properties
-/gateway/.mvn/wrapper/maven-wrapper.properties
